@@ -4,7 +4,8 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status
 from src.services.getIP import get_client_ip
-from src.services.ipgeolocation import IPGeolocationService
+from src.services.ipgeolocation import get_IP_geolocation
+# from src.services.ipgeolocation import getIPGeolocation
 from src.users.models import User
 from src.users.permissions import IsUserOrReadOnly
 from src.users.serializers import CreateUserSerializer, UserSerializer
@@ -23,15 +24,17 @@ class UserViewSet(viewsets.ModelViewSet):
     def create(self, request):
         data = request.data
         data['username'] =  data['email']
-        serialzer = UserSerializer(data=data)
+        serialzer = CreateUserSerializer(data=data)
         if serialzer.is_valid(raise_exception=True):
-            pass
-            # serialzer.save()
+            # pass
+            serialzer.save()
         else:
             return Response(status=401)    
-        print('='*45)
-        print(get_client_ip(self.request))
-        print('='*45)
+        # print('='*45)
+        # print(serialzer.data['id'])
+        # print(get_client_ip(self.request))
+        # print('='*45)
+        geolocationData = get_IP_geolocation(ip_address=get_client_ip(self.request))
         return Response(serialzer.data, status=status.HTTP_201_CREATED)
 
     
