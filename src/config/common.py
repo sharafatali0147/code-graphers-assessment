@@ -47,6 +47,8 @@ INSTALLED_APPS = (
     'health_check.contrib.celery_ping',  # requires celery
     'src.users',
     'src.posts',
+    'src.post_like',
+    'src.geolocation',
     'src.common',
 )
 
