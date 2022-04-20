@@ -46,6 +46,7 @@ INSTALLED_APPS = (
     'health_check.contrib.migrations',
     'health_check.contrib.celery_ping',  # requires celery
     'src.users',
+    'src.posts',
     'src.common',
 )
 
