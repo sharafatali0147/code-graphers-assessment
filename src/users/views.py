@@ -35,7 +35,7 @@ class UserViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.Cre
         user = super().get_permissions()
         import pprint
         pprint.pprint(user)
-        print(user[0].get('pk'))
+        # print(user[0].get('pk'))
         return user
 
     @action(detail=False, methods=['get'], url_path='me', url_name='me')
