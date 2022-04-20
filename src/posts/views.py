@@ -17,7 +17,7 @@ from rest_framework import permissions
 from rest_framework.decorators import action
 
 
-class PostViewSet(viewsets.ModelViewSet):
+class PostsViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows Posts to be viewed or edited.
     """
@@ -35,9 +35,20 @@ class PostViewSet(viewsets.ModelViewSet):
 
         return JsonResponse({'Posts': serialzer.data})
     
-    @swagger_auto_schema(methods=['post'], request_body=create_post, responses={200: PostsSerializer})
-    @action(detail=False, methods=['POST'], name='create_post')
-    def create_post(self, request, *args, **kwargs):
+    # @swagger_auto_schema(methods=['post'], request_body=create_post, responses={200: PostsSerializer})
+    # @action(detail=False, methods=['POST'], name='create_post')
+    # def create_post(self, request, *args, **kwargs):
+    #     data = request.data
+    #     data['user_id'] =  request.user.id
+    #     serialzer = PostsSerializer(data=data)
+    #     if serialzer.is_valid(raise_exception=True):
+    #         serialzer.save()
+    #     else:
+    #         return Response(status=401)    
+        
+    #     return Response(serialzer.data, status=status.HTTP_201_CREATED)
+    
+    def create(self, request):
         data = request.data
         data['user_id'] =  request.user.id
         serialzer = PostsSerializer(data=data)

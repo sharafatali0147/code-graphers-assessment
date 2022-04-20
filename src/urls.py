@@ -15,7 +15,8 @@ from drf_yasg import openapi
 
 
 from src.users.urls import users_router
-from src.posts import views
+from src.posts import views as postsViews
+from src.post_like import views as postLIkeViews
 
 schema_view = get_schema_view(
     openapi.Info(title="Code Graphers Assessment API", default_version='v1'),
@@ -25,7 +26,9 @@ schema_view = get_schema_view(
 router = DefaultRouter()
 
 router.registry.extend(users_router.registry)
-router.register(r"posts", views.PostViewSet)
+router.register(r"posts", postsViews.PostsViewSet)
+router.register(r"postLike", postLIkeViews.PostLikeViewSet)
+
 
 urlpatterns = [
     # admin panel
