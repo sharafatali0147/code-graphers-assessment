@@ -15,6 +15,7 @@ from drf_yasg import openapi
 from rest_framework import viewsets
 from rest_framework import permissions
 from rest_framework.decorators import action
+from src.post_like.models import PostLike
 
 
 class PostsViewSet(viewsets.ModelViewSet):
@@ -26,12 +27,28 @@ class PostsViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     # http_method_names = ['get', 'head']
     
+    def list(self, request):
+        queryset = Posts.objects.all()
+        serializer = PostsSerializer(queryset, many=True)
+        
+        for post in serializer.data:            
+            post['liked_count'] = PostLike.objects.all().filter(liked=True, post_id=post['id']).count()
+            post['unliked_count'] = PostLike.objects.all().filter(liked=False, post_id=post['id']).count()
+
+        return Response(serializer.data)
+    
     @action(detail=False, methods=['GET'], name='get_my_posts_list')
     def get_my_posts_list(self, request, *args, **kwargs):
         data = {}
         data['user_id'] = request.user.id
         posts = Posts.objects.all().filter(**data)
+        
         serialzer = PostsSerializer(posts, many=True)
+        
+        for post in serialzer.data:
+            post['liked_count'] = PostLike.objects.all().filter(liked=True, post_id=post['id']).count()
+            post['unliked_count'] = PostLike.objects.all().filter(liked=False, post_id=post['id']).count()
+
 
         return JsonResponse({'Posts': serialzer.data})
     

@@ -11,3 +11,10 @@ class Posts(models.Model):
    user_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_id")
    created_at = models.DateTimeField(auto_now_add=True)
    updated_at = models.DateTimeField(auto_now=True)
+   
+   def liked_count(self):
+      return None
+   #    # return PostLike.objects.all().filter(liked=True).count()
+   
+   def unliked_count(self):
+      return None
