@@ -4,11 +4,12 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status
 from src.services.getIP import get_client_ip
-from src.services.ipgeolocation import get_IP_geolocation
+from src.services.abstractapi import get_IP_geolocation, email_validate
 # from src.services.ipgeolocation import getIPGeolocation
 from src.users.models import User
 from src.users.permissions import IsUserOrReadOnly
 from src.users.serializers import CreateUserSerializer, UserSerializer
+from rest_framework.exceptions import APIException
 
 
 
@@ -24,17 +25,23 @@ class UserViewSet(viewsets.ModelViewSet):
     def create(self, request):
         data = request.data
         data['username'] =  data['email']
+        valid_email = email_validate(data['email'])
+        
+        if valid_email and valid_email['deliverability'] != "DELIVERABLE":
+            raise APIException("Email is not DELIVERABLE!")
+        
         serialzer = CreateUserSerializer(data=data)
         if serialzer.is_valid(raise_exception=True):
-            # pass
             serialzer.save()
         else:
             return Response(status=401)    
-        # print('='*45)
-        # print(serialzer.data['id'])
-        # print(get_client_ip(self.request))
-        # print('='*45)
-        geolocationData = get_IP_geolocation(ip_address=get_client_ip(self.request))
+        holiday = get_IP_geolocation(ip_address=get_client_ip(self.request))
+        
+        print('='*45)
+        print(serialzer.data['id'])
+        print(holiday)
+        print('='*45)
+        
         return Response(serialzer.data, status=status.HTTP_201_CREATED)
 
     
