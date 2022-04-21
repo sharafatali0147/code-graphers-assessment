@@ -12,7 +12,7 @@ class PostLikeSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-# class create_post(serializers.ModelSerializer):
-#     class Meta:
-#         model = PostLike
-#         fields = ['title', 'description']
+class create_postLike(serializers.ModelSerializer):
+    class Meta:
+        model = PostLike
+        fields = ['liked', 'post_id']

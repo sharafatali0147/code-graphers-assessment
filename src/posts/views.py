@@ -23,9 +23,11 @@ class PostsViewSet(viewsets.ModelViewSet):
     API endpoint that allows Posts to be viewed or edited.
     """
     queryset = Posts.objects.all()
-    serializer_class = PostsSerializer
+    serializers = {'default': PostsSerializer, 'create': create_post}
     permission_classes = [permissions.IsAuthenticated]
-    # http_method_names = ['get', 'head']
+    
+    def get_serializer_class(self):
+        return self.serializers.get(self.action, self.serializers['default'])
     
     def list(self, request):
         queryset = Posts.objects.all()
@@ -52,18 +54,6 @@ class PostsViewSet(viewsets.ModelViewSet):
 
         return JsonResponse({'Posts': serialzer.data})
     
-    # @swagger_auto_schema(methods=['post'], request_body=create_post, responses={200: PostsSerializer})
-    # @action(detail=False, methods=['POST'], name='create_post')
-    # def create_post(self, request, *args, **kwargs):
-    #     data = request.data
-    #     data['user_id'] =  request.user.id
-    #     serialzer = PostsSerializer(data=data)
-    #     if serialzer.is_valid(raise_exception=True):
-    #         serialzer.save()
-    #     else:
-    #         return Response(status=401)    
-        
-    #     return Response(serialzer.data, status=status.HTTP_201_CREATED)
     
     def create(self, request):
         data = request.data
@@ -72,6 +62,6 @@ class PostsViewSet(viewsets.ModelViewSet):
         if serialzer.is_valid(raise_exception=True):
             serialzer.save()
         else:
-            return Response(status=401)    
+            return Response(status=status.HTTP_400_BAD_REQUEST)    
         
         return Response(serialzer.data, status=status.HTTP_201_CREATED)

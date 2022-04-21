@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import viewsets
 from .models import PostLike
-from .serializers import PostLikeSerializer
+from .serializers import PostLikeSerializer, create_postLike
 from rest_framework import permissions
 from rest_framework.response import Response
 from rest_framework import status
@@ -13,9 +13,12 @@ class PostLikeViewSet(viewsets.ModelViewSet):
     API endpoint that allows PostLike to be viewed or edited.
     """
     queryset = PostLike.objects.all()
-    serializer_class = PostLikeSerializer
+    serializers = {'default': PostLikeSerializer, 'create': create_postLike}
     permission_classes = [permissions.IsAuthenticated]
     http_method_names = ['get', 'post']
+    
+    def get_serializer_class(self):
+        return self.serializers.get(self.action, self.serializers['default'])
     
     def create(self, request):
         data = request.data

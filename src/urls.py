@@ -11,7 +11,6 @@ from rest_framework_simplejwt.views import (
 )
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
-# from src.posts.views import PostsViewSetCustom
 
 
 from src.users.urls import users_router
