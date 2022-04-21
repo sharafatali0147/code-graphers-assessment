@@ -18,7 +18,7 @@ def email_validate(email):
     url = f"https://emailvalidation.abstractapi.com/v1/?api_key={settings.EMAIL_VALIDATION_API_KEY}&email={email}"
 
     response = requests.get(url)
-    print(response.status_code)
+    # print(response.status_code)
     data_dict = json.loads(response.content)
     # print(data_dict)
     return data_dict
@@ -34,7 +34,7 @@ def get_holidays(country, year = None, month = None, day = None):
     url = f"https://holidays.abstractapi.com/v1/?api_key={settings.HOLIDAYS_API_KEY}&country={country}&year={year}&month={month}&day={day}"
 
     response = requests.get(url)
-    print(response.status_code)
+    # print(response.status_code)
     data_dict = json.loads(response.content)
     # print(data_dict)
     return data_dict

@@ -12,4 +12,4 @@ class GeolocationViewSet(viewsets.ModelViewSet):
     queryset = Geolocation.objects.all()
     serializer_class = GeolocationSerializer
     permission_classes = [permissions.IsAuthenticated]
-    http_method_names = ['get', 'post']
+    http_method_names = ['get']
