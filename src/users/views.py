@@ -5,10 +5,10 @@ from rest_framework.response import Response
 from rest_framework import status
 from src.services.getIP import get_client_ip
 from src.services.abstractapi import get_IP_geolocation, email_validate
-# from src.services.ipgeolocation import getIPGeolocation
 from src.users.models import User
 from src.users.permissions import IsUserOrReadOnly
 from src.users.serializers import CreateUserSerializer, UserSerializer
+from src.geolocation.serializers import GeolocationSerializer
 from rest_framework.exceptions import APIException
 
 
@@ -35,12 +35,16 @@ class UserViewSet(viewsets.ModelViewSet):
             serialzer.save()
         else:
             return Response(status=401)    
-        holiday = get_IP_geolocation(ip_address=get_client_ip(self.request))
+        holiday, geolocation_dict = get_IP_geolocation(ip_address=get_client_ip(self.request))
         
-        print('='*45)
-        print(serialzer.data['id'])
-        print(holiday)
-        print('='*45)
+        geo_data = {}
+        geo_data['user_id'] =  serialzer.data['id']
+        geo_data['user_geolocation'] =  geolocation_dict
+        geo_data['holidays'] =  holiday
+        
+        geo_serialzer = GeolocationSerializer(data=geo_data)
+        if geo_serialzer.is_valid(raise_exception=True):
+            geo_serialzer.save()
         
         return Response(serialzer.data, status=status.HTTP_201_CREATED)
 
