@@ -16,6 +16,7 @@ from drf_yasg import openapi
 from src.users.urls import users_router
 from src.posts import views as postsViews
 from src.post_like import views as postLIkeViews
+from src.geolocation import views as geolocationViews
 
 schema_view = get_schema_view(
     openapi.Info(title="Code Graphers Assessment API", default_version='v1'),
@@ -27,6 +28,7 @@ router = DefaultRouter()
 router.registry.extend(users_router.registry)
 router.register(r"posts", postsViews.PostsViewSet)
 router.register(r"postLike", postLIkeViews.PostLikeViewSet)
+router.register(r"Geolocation", geolocationViews.GeolocationViewSet)
 
 
 urlpatterns = [
