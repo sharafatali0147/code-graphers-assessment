@@ -1,3 +1,4 @@
+import email
 from django.urls import reverse
 from django.contrib.auth.hashers import check_password
 from nose.tools import ok_, eq_
@@ -17,12 +18,17 @@ class TestUserListTestCase(APITestCase):
 
     def setUp(self):
         self.url = reverse('user-list')
-        self.user_data = {'username': 'test', 'password': 'test'}
+        self.user_data = {'username': 'sharafatali0147@gmail.com', 'password': 'test', 'first_name': 'Sharafat', 'last_name': 'Ali', 'email': 'sharafatali0147@gmail.com'}
+        
 
     def test_post_request_with_no_data_fails(self):
         response = self.client.post(self.url, {})
-        eq_(response.status_code, status.HTTP_400_BAD_REQUEST)
-
+        eq_(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+    def test_post_request_with_fake_email(self):
+        response = self.client.post(self.url, {'email': 'fake@gmail.com'})
+        eq_(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
     def test_post_request_with_valid_data_succeeds(self):
         response = self.client.post(self.url, self.user_data)
         eq_(response.status_code, status.HTTP_201_CREATED)
@@ -47,12 +53,3 @@ class TestUserDetailTestCase(APITestCase):
     def test_get_request_returns_a_given_user(self):
         response = self.client.get(self.url)
         eq_(response.status_code, status.HTTP_200_OK)
-
-    def test_put_request_updates_a_user(self):
-        new_first_name = fake.first_name()
-        payload = {'first_name': new_first_name}
-        response = self.client.put(self.url, payload)
-        eq_(response.status_code, status.HTTP_200_OK)
-
-        user = User.objects.get(pk=self.user.id)
-        eq_(user.first_name, new_first_name)

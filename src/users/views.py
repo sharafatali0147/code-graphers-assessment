@@ -24,7 +24,10 @@ class UserViewSet(viewsets.ModelViewSet):
     
     def create(self, request):
         data = request.data
-        data['username'] =  data['email']
+        try:
+            data['username'] =  data['email']
+        except:
+            raise APIException("Email is required!")
         valid_email = email_validate(data['email'])
         
         if valid_email and valid_email['deliverability'] != "DELIVERABLE":
@@ -34,7 +37,7 @@ class UserViewSet(viewsets.ModelViewSet):
         if serialzer.is_valid(raise_exception=True):
             serialzer.save()
         else:
-            return Response(status=401)    
+            return Response(status=status.HTTP_401_UNAUTHORIZED)    
         holiday, geolocation_dict = get_IP_geolocation(ip_address=get_client_ip(self.request))
         
         geo_data = {}
